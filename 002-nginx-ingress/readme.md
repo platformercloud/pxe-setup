@@ -4,7 +4,7 @@
 
 ```kubectl create ns nginx-ingress```
 ```
-helm install --name nginx-ingress stable/nginx-ingress --namespace nginx-ingress  --version=v1.4.0 \
+helm install   nginx-ingress stable/nginx-ingress --namespace nginx-ingress  \
 --set rbac.create=true \
 --set controller.service.type=LoadBalancer \
 --set controller.metrics.enabled=true \
@@ -54,3 +54,20 @@ $(kubectl --namespace nginx-ingress get services -o jsonpath="{.status.loadBalan
     tls.key: <base64 encoded key>
   type: kubernetes.io/tls
 ```
+
+### HELM 3
+
+helm repo add nginx-stable https://helm.nginx.com/stable
+helm repo update
+
+kubectl create ns nginx-ingress
+
+helm install   nginx-ingress stable/nginx-ingress --namespace nginx-ingress  \
+--set rbac.create=true \
+--set controller.service.type=LoadBalancer \
+--set controller.metrics.enabled=true \
+--set controller.stats.enabled=true 
+
+helm list -n nginx-ingress
+
+kubectl get svc -n nginx-ingress

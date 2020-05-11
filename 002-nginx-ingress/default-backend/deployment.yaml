@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: default-pxe-backend
+  namespace: nginx-ingress
+spec:
+  selector:
+    matchLabels:
+      app: default-pxe-backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: default-pxe-backend
+    spec:
+      containers:
+      - name: default-pxe-backend
+        image: gcr.io/platformer-public/pxe-default-backend:1.0
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 60
+          timeoutSeconds: 25
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 50m
+            memory: 100Mi
+          requests:
+            cpu: 30m
+            memory: 50Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: default-pxe-backend
+  namespace: nginx-ingress
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: default-pxe-backend
